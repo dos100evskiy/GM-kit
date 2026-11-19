@@ -1,0 +1,110 @@
+[
+  {
+    "id": "giant-rat",
+    "name": "Giant Rat",
+    "level": -1,
+    "traits": ["animal"],
+    "roles": ["minion", "skirmisher"],
+    "kind": "creature",
+    "source": "Bestiary (sample)"
+  },
+  {
+    "id": "goblin-warrior",
+    "name": "Goblin Warrior",
+    "level": -1,
+    "traits": ["goblin", "humanoid"],
+    "roles": ["minion", "skirmisher"],
+    "kind": "creature",
+    "source": "Bestiary (sample)"
+  },
+  {
+    "id": "skeleton-guard",
+    "name": "Skeleton Guard",
+    "level": -1,
+    "traits": ["undead", "skeleton", "mindless"],
+    "roles": ["minion", "soldier"],
+    "kind": "creature",
+    "source": "Bestiary (sample)"
+  },
+  {
+    "id": "zombie-shambler",
+    "name": "Zombie Shambler",
+    "level": -1,
+    "traits": ["undead", "zombie", "mindless"],
+    "roles": ["minion", "brute"],
+    "kind": "creature",
+    "source": "Bestiary (sample)"
+  },
+  {
+    "id": "wolf",
+    "name": "Wolf",
+    "level": 1,
+    "traits": ["animal"],
+    "roles": ["skirmisher"],
+    "kind": "creature",
+    "source": "Bestiary (sample)"
+  },
+  {
+    "id": "ghoul",
+    "name": "Ghoul",
+    "level": 1,
+    "traits": ["undead", "ghoul"],
+    "roles": ["lurker"],
+    "kind": "creature",
+    "source": "Bestiary (sample)"
+  },
+  {
+    "id": "hobgoblin-soldier",
+    "name": "Hobgoblin Soldier",
+    "level": 1,
+    "traits": ["goblin", "humanoid"],
+    "roles": ["soldier"],
+    "kind": "creature",
+    "source": "Bestiary (sample)"
+  },
+  {
+    "id": "wight",
+    "name": "Wight",
+    "level": 3,
+    "traits": ["undead"],
+    "roles": ["brute", "lurker"],
+    "kind": "creature",
+    "source": "Bestiary (sample)"
+  },
+  {
+    "id": "ogre-warrior",
+    "name": "Ogre Warrior",
+    "level": 3,
+    "traits": ["giant", "humanoid"],
+    "roles": ["brute"],
+    "kind": "creature",
+    "source": "Bestiary (sample)"
+  },
+  {
+    "id": "troll",
+    "name": "Troll",
+    "level": 5,
+    "traits": ["giant", "troll"],
+    "roles": ["brute", "boss"],
+    "kind": "creature",
+    "source": "Bestiary (sample)"
+  },
+  {
+    "id": "young-white-dragon",
+    "name": "Young White Dragon",
+    "level": 6,
+    "traits": ["dragon", "cold"],
+    "roles": ["boss", "caster"],
+    "kind": "creature",
+    "source": "Bestiary (sample)"
+  },
+  {
+    "id": "poisoned-dart-trap",
+    "name": "Poisoned Dart Trap",
+    "level": 2,
+    "traits": ["trap", "hazard"],
+    "roles": ["hazard"],
+    "kind": "hazard",
+    "source": "GM Core (sample)"
+  }
+]

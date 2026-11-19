@@ -1,0 +1,182 @@
+[
+  {
+    "id": "degrees-of-success",
+    "title": "Degrees of Success (степени успеха)",
+    "aliases": ["степень успеха", "критический успех", "крит", "natural 20"],
+    "category": "Базовые правила",
+    "tags": ["check", "dc", "crit"],
+    "text": "Сравни результат проверки с DC: равен или выше — успех; на 10 и более выше — критический успех; на 10 и более ниже — критический провал. Натуральная 20 улучшает степень успеха на одну, натуральная 1 ухудшает на одну.",
+    "source": "Player Core",
+    "url": "https://2e.aonprd.com/Search.aspx?Query=Degrees+of+Success"
+  },
+  {
+    "id": "multiple-attack-penalty",
+    "title": "Multiple Attack Penalty (MAP)",
+    "aliases": ["MAP", "штраф за несколько атак", "множественная атака", "multi attack"],
+    "category": "Бой",
+    "tags": ["attack", "penalty"],
+    "text": "Первая атака в ход — без штрафа, вторая — −5, третья и последующие — −10. Оружие с трейтом agile использует −4 и −8. Штраф сбрасывается в начале твоего хода; некоторые действия тоже считаются атаками.",
+    "source": "Player Core",
+    "url": "https://2e.aonprd.com/Search.aspx?Query=Multiple+Attack+Penalty"
+  },
+  {
+    "id": "dying",
+    "title": "Dying (при смерти)",
+    "aliases": ["умирает", "смерть", "0 HP", "recovery check", "проверка восстановления"],
+    "category": "Состояния",
+    "tags": ["death", "condition", "hp"],
+    "text": "Когда HP опускается до 0, существо получает dying 1 плюс значение wounded и состояние unconscious. В начале каждого своего хода — проверка восстановления: flat check против DC 10 + dying. Крит. успех: dying −2, успех: −1, провал: +1, крит. провал: +2. При dying 4 + doomed существо умирает.",
+    "source": "Player Core",
+    "url": "https://2e.aonprd.com/Search.aspx?Query=Dying"
+  },
+  {
+    "id": "wounded",
+    "title": "Wounded (ранен)",
+    "aliases": ["ранен", "wounded value", "при смерти повторно"],
+    "category": "Состояния",
+    "tags": ["death", "condition"],
+    "text": "Каждый раз, теряя dying, существо получает wounded 1 или увеличивает имеющееся значение на 1. При следующем падении dying = 1 + wounded. Лечение до полного запаса HP снимает wounded.",
+    "source": "Player Core",
+    "url": "https://2e.aonprd.com/Search.aspx?Query=Wounded"
+  },
+  {
+    "id": "doomed",
+    "title": "Doomed (обречён)",
+    "aliases": ["обречен", "порог смерти"],
+    "category": "Состояния",
+    "tags": ["death", "condition"],
+    "text": "Doomed увеличивает порог смерти: существо умирает при dying 4 + значение doomed. Обычно снимается только полноценным отдыхом или мощной магией.",
+    "source": "Player Core",
+    "url": "https://2e.aonprd.com/Search.aspx?Query=Doomed"
+  },
+  {
+    "id": "hero-points",
+    "title": "Hero Points",
+    "aliases": ["геройские очки", "очки героя", "переброс"],
+    "category": "Базовые правила",
+    "tags": ["meta", "reroll"],
+    "text": "Максимум 3 Hero Points; в начале каждой сессии персонаж получает 1. Потратить Hero Point можно, чтобы перебросить d20 (берётся лучший результат) или чтобы избежать смерти и стабилизироваться.",
+    "source": "Player Core",
+    "url": "https://2e.aonprd.com/Search.aspx?Query=Hero+Points"
+  },
+  {
+    "id": "persistent-damage",
+    "title": "Persistent Damage (постоянный урон)",
+    "aliases": ["постоянный урон", "горение", "кислота", "flat check 15"],
+    "category": "Состояния",
+    "tags": ["damage", "condition"],
+    "text": "В конце своего хода существо получает урон от каждого источника persistent damage, затем проходит flat check DC 15, чтобы этот источник прекратился. Урон повторяется каждый ход, пока проверка не удастся; источники разных типов считаются отдельно.",
+    "source": "Player Core",
+    "url": "https://2e.aonprd.com/Search.aspx?Query=Persistent+Damage"
+  },
+  {
+    "id": "frightened",
+    "title": "Frightened (испуган)",
+    "aliases": ["испуг", "страх", "fear"],
+    "category": "Состояния",
+    "tags": ["condition", "penalty"],
+    "text": "Штраф −X ко всем проверкам и DC. Значение уменьшается на 1 в конце каждого своего хода.",
+    "source": "Player Core",
+    "url": "https://2e.aonprd.com/Search.aspx?Query=Frightened"
+  },
+  {
+    "id": "sickened",
+    "title": "Sickened (тошнота)",
+    "aliases": ["тошнота", "тошнит", "retch"],
+    "category": "Состояния",
+    "tags": ["condition", "penalty"],
+    "text": "Штраф −X ко всем проверкам и DC; нельзя добровольно есть и пить. Действие Retch (1 действие): Fortitude против DC эффекта, чтобы уменьшить значение на 1.",
+    "source": "Player Core",
+    "url": "https://2e.aonprd.com/Search.aspx?Query=Sickened"
+  },
+  {
+    "id": "off-guard",
+    "title": "Off-Guard (застигнут врасплох)",
+    "aliases": ["flat-footed", "флэт-фут", "−2 AC", "застигнут врасплох"],
+    "category": "Состояния",
+    "tags": ["condition", "ac"],
+    "text": "Цель получает −2 к AC. Возникает при flanking, от grabbed, restrained, prone, при атаке из скрытности и в других ситуациях, описанных эффектом.",
+    "source": "Player Core",
+    "url": "https://2e.aonprd.com/Search.aspx?Query=Off-Guard"
+  },
+  {
+    "id": "flanking",
+    "title": "Flanking (окружение)",
+    "aliases": ["фланкинг", "окружение", "flank"],
+    "category": "Бой",
+    "tags": ["tactics", "off-guard"],
+    "text": "Если двое союзников находятся с противоположных сторон цели и могут её атаковать, цель считается off-guard для них. Фланкинг не делает цель off-guard для остальных.",
+    "source": "Player Core",
+    "url": "https://2e.aonprd.com/Search.aspx?Query=Flanking"
+  },
+  {
+    "id": "hidden-concealed-undetected",
+    "title": "Concealed, Hidden, Undetected",
+    "aliases": ["скрытность", "незамечен", "concealment", "flat check 5", "flat check 11"],
+    "category": "Бой",
+    "tags": ["stealth", "perception"],
+    "text": "Concealed: flat check DC 5 при атаке или выборе цели. Hidden: flat check DC 11. Undetected: существо не знает, где ты, пока не выполнит Seek. Observed — обычное видимое состояние.",
+    "source": "Player Core",
+    "url": "https://2e.aonprd.com/Search.aspx?Query=Concealed+Hidden+Undetected"
+  },
+  {
+    "id": "seek",
+    "title": "Seek (поиск)",
+    "aliases": ["поиск", "засечь", "perception", "восприятие"],
+    "category": "Действия",
+    "tags": ["perception", "stealth"],
+    "text": "1 действие, Perception (тайная проверка) против Stealth DC. Успех превращает undetected в hidden, а hidden — в observed; крит. успех даёт дополнительную информацию.",
+    "source": "Player Core",
+    "url": "https://2e.aonprd.com/Search.aspx?Query=Seek"
+  },
+  {
+    "id": "sneak",
+    "title": "Sneak (красться)",
+    "aliases": ["красться", "stealth", "скрытное передвижение"],
+    "category": "Действия",
+    "tags": ["stealth"],
+    "text": "1 действие, Stealth против Perception DC. Успех: hidden; крит. успех: undetected. Нужно укрытие, concealment или другое подходящее условие.",
+    "source": "Player Core",
+    "url": "https://2e.aonprd.com/Search.aspx?Query=Sneak"
+  },
+  {
+    "id": "stunned-slowed-quickened",
+    "title": "Stunned, Slowed, Quickened",
+    "aliases": ["оглушен", "замедлен", "ускорен", "действия"],
+    "category": "Состояния",
+    "tags": ["condition", "actions"],
+    "text": "Stunned X: в начале своего хода теряешь X действий, затем значение уменьшается на 1. Slowed X: каждый ход теряешь X действий. Quickened: +1 действие, которое можно потратить только на указанное в эффекте.",
+    "source": "Player Core",
+    "url": "https://2e.aonprd.com/Search.aspx?Query=Stunned+Slowed+Quickened"
+  },
+  {
+    "id": "prone",
+    "title": "Prone (лежа)",
+    "aliases": ["лежа", "сбит с ног", "stand", "встать"],
+    "category": "Состояния",
+    "tags": ["condition", "movement"],
+    "text": "Лежащий боец off-guard и получает −2 к броскам атак. Встать стоит 1 действие (Stand); ползти (Crawl) — 1 действие за 5 футов.",
+    "source": "Player Core",
+    "url": "https://2e.aonprd.com/Search.aspx?Query=Prone"
+  },
+  {
+    "id": "grabbed-restrained",
+    "title": "Grabbed и Restrained",
+    "aliases": ["захват", "схвачен", "удерживается", "immobilized"],
+    "category": "Состояния",
+    "tags": ["condition", "grapple"],
+    "text": "Grabbed: off-guard и immobilized; для действий с manipulate нужно сначала Escape. Restrained: то же самое, но нельзя использовать manipulate и двигаться. Захвативший должен иметь свободную руку.",
+    "source": "Player Core",
+    "url": "https://2e.aonprd.com/Search.aspx?Query=Grabbed+Restrained"
+  },
+  {
+    "id": "unconscious",
+    "title": "Unconscious (без сознания)",
+    "aliases": ["без сознания", "вырублен", "0 hp"],
+    "category": "Состояния",
+    "tags": ["condition", "death"],
+    "text": "Unconscious: нельзя действовать, −4 AC, состояния blinded и off-guard, существо падает prone. Обычно возникает при 0 HP вместе с dying.",
+    "source": "Player Core",
+    "url": "https://2e.aonprd.com/Search.aspx?Query=Unconscious"
+  }
+]

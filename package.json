@@ -1,0 +1,56 @@
+{
+  "name": "pf2e-gm-kit",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Локальные инструменты мастера для Pathfinder 2e: поиск по правилам, генератор энкаунтеров, боевой трекер",
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "pf": "dist/cli/index.js"
+  },
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite",
+    "dev:cli": "tsx src/cli/index.ts",
+    "build": "tsup",
+    "build:web": "vite build",
+    "build:all": "npm run build && npm run build:web",
+    "preview": "vite preview",
+    "start": "node scripts/start.mjs",
+    "doctor": "node scripts/doctor.mjs",
+    "icons": "node scripts/make-icons.mjs",
+    "check:i18n": "tsx scripts/check-i18n.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "verify": "npm run typecheck && npm test && npm run build:all",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "import:foundry": "tsx scripts/import-foundry.ts"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.5",
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^5.2.0",
+    "tailwindcss": "^4.3.5",
+    "tsup": "^8.3.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0",
+    "vite": "^7.3.8",
+    "vite-plugin-pwa": "^1.3.0",
+    "vitest": "^3.0.0"
+  },
+  "dependencies": {
+    "cmdk": "^1.1.1",
+    "dexie": "^4.4.7",
+    "dexie-react-hooks": "^4.4.0",
+    "i18next": "^27.2.2",
+    "lucide-react": "^1.76.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-i18next": "^18.0.3",
+    "zustand": "^5.1.0"
+  }
+}

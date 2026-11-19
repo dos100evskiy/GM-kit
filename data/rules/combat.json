@@ -1,0 +1,222 @@
+[
+  {
+    "id": "grapple",
+    "title": "Grapple (захват)",
+    "aliases": ["захват", "схватить", "athletics", "fortitude"],
+    "category": "Действия",
+    "tags": ["athletics", "attack"],
+    "text": "1 действие, Athletics против Fortitude; нужна свободная рука, а цель — не более чем на один размер больше. Успех: grabbed; крит. успех: restrained. Цель может Escape.",
+    "source": "Player Core",
+    "url": "https://2e.aonprd.com/Search.aspx?Query=Grapple"
+  },
+  {
+    "id": "trip",
+    "title": "Trip (подсечка)",
+    "aliases": ["подсечка", "сбить с ног", "athletics", "reflex"],
+    "category": "Действия",
+    "tags": ["athletics", "attack"],
+    "text": "1 действие, Athletics против Reflex. Успех: цель prone; крит. успех: цель prone и получает 1d6 дробящего урона.",
+    "source": "Player Core",
+    "url": "https://2e.aonprd.com/Search.aspx?Query=Trip"
+  },
+  {
+    "id": "shove",
+    "title": "Shove (толчок)",
+    "aliases": ["толчок", "оттолкнуть", "athletics", "fortitude"],
+    "category": "Действия",
+    "tags": ["athletics", "attack"],
+    "text": "1 действие, Athletics против Fortitude. Успех: отталкиваешь цель на 5 футов; крит. успех: на 10 футов; крит. провал: падаешь prone ты.",
+    "source": "Player Core",
+    "url": "https://2e.aonprd.com/Search.aspx?Query=Shove"
+  },
+  {
+    "id": "disarm",
+    "title": "Disarm (разоружение)",
+    "aliases": ["разоружить", "выбить оружие", "athletics", "reflex"],
+    "category": "Действия",
+    "tags": ["athletics", "attack"],
+    "text": "1 действие, Athletics против Reflex. Крит. успех: предмет выбит из рук; успех: −2 к атакам целью до начала её следующего хода; крит. провал: цель может разоружить тебя.",
+    "source": "Player Core",
+    "url": "https://2e.aonprd.com/Search.aspx?Query=Disarm"
+  },
+  {
+    "id": "escape",
+    "title": "Escape (вырваться)",
+    "aliases": ["вырваться", "освободиться", "acrobatics"],
+    "category": "Действия",
+    "tags": ["acrobatics", "athletics"],
+    "text": "1 действие, Acrobatics или Athletics против DC захвата (обычно Athletics DC захватившего). MAP применяется.",
+    "source": "Player Core",
+    "url": "https://2e.aonprd.com/Search.aspx?Query=Escape"
+  },
+  {
+    "id": "recall-knowledge",
+    "title": "Recall Knowledge (вспомнить знание)",
+    "aliases": ["вспомнить", "знание", "arcana", "nature", "occultism", "religion", "society"],
+    "category": "Действия",
+    "tags": ["knowledge", "skill"],
+    "text": "1 действие, тайная проверка подходящего навыка (Arcana, Nature, Occultism, Religion или Society) против DC по уровню существа. Успех даёт известный факт, крит. успех — дополнительную полезную информацию.",
+    "source": "Player Core",
+    "url": "https://2e.aonprd.com/Search.aspx?Query=Recall+Knowledge"
+  },
+  {
+    "id": "aid",
+    "title": "Aid (помощь)",
+    "aliases": ["помощь", "помочь", "реакция", "dc 15"],
+    "category": "Действия",
+    "tags": ["reaction", "teamwork"],
+    "text": "Реакция. Заранее потрать действие на подготовку или помоги в момент; проверка против DC 15. Успех: +1 к проверке союзника, крит. успех: +2 (при master +3, при legendary +4).",
+    "source": "Player Core",
+    "url": "https://2e.aonprd.com/Search.aspx?Query=Aid"
+  },
+  {
+    "id": "ready-delay",
+    "title": "Ready и Delay",
+    "aliases": ["готовность", "отложить ход", "delay", "ready", "триггер"],
+    "category": "Действия",
+    "tags": ["reaction", "initiative"],
+    "text": "Ready (2 действия): выбрать триггер и действие, затем потратить реакцию, когда триггер сработает. Delay (свободное действие в начале своего хода): изменить свою инициативу и действовать позже.",
+    "source": "Player Core",
+    "url": "https://2e.aonprd.com/Search.aspx?Query=Ready+Delay"
+  },
+  {
+    "id": "sustain",
+    "title": "Sustain a Spell (поддержание)",
+    "aliases": ["поддержание", "sustain", "длительность заклинания"],
+    "category": "Магия",
+    "tags": ["spell", "action"],
+    "text": "1 действие. Продлевает эффект с трейтом sustained до конца следующего хода; без Sustain эффект заканчивается.",
+    "source": "Player Core",
+    "url": "https://2e.aonprd.com/Search.aspx?Query=Sustain+a+Spell"
+  },
+  {
+    "id": "reactions",
+    "title": "Reactions (реакции)",
+    "aliases": ["реакция", "reaction", "reactive strike"],
+    "category": "Бой",
+    "tags": ["action", "turn"],
+    "text": "По умолчанию 1 реакция за раунд; она восстанавливается в начале твоего хода. Некоторые способности дают дополнительные реакции.",
+    "source": "Player Core",
+    "url": "https://2e.aonprd.com/Search.aspx?Query=Reactions"
+  },
+  {
+    "id": "basic-save",
+    "title": "Basic Saving Throw (базовый спасбросок)",
+    "aliases": ["базовый спасбросок", "basic save", "половина урона"],
+    "category": "Магия",
+    "tags": ["save", "damage"],
+    "text": "Урон по спасброску: крит. успех — 0, успех — половина, провал — полный, крит. провал — двойной урон.",
+    "source": "Player Core",
+    "url": "https://2e.aonprd.com/Search.aspx?Query=Basic+Saving+Throw"
+  },
+  {
+    "id": "incapacitation",
+    "title": "Incapacitation (обезоруживающий трейт)",
+    "aliases": ["incapacitation", "трейт incapacitation", "сон", "паралич"],
+    "category": "Магия",
+    "tags": ["trait", "save"],
+    "text": "Если цель эффекта с трейтом incapacitation на 2+ уровня выше источника, её результат считается на одну степень успеха лучше.",
+    "source": "Player Core",
+    "url": "https://2e.aonprd.com/Search.aspx?Query=Incapacitation"
+  },
+  {
+    "id": "fortune-misfortune",
+    "title": "Fortune и Misfortune",
+    "aliases": ["удача", "неудача", "fortune", "misfortune", "2d20"],
+    "category": "Базовые правила",
+    "tags": ["roll", "trait"],
+    "text": "Fortune: брось 2d20 и возьми лучший результат. Misfortune: возьми худший. Несколько эффектов fortune или misfortune не складываются — применяется один.",
+    "source": "Player Core",
+    "url": "https://2e.aonprd.com/Search.aspx?Query=Fortune+Misfortune"
+  },
+  {
+    "id": "counteract",
+    "title": "Counteract (противодействие)",
+    "aliases": ["противодействие", "counteract", "dispel", "рассеять"],
+    "category": "Магия",
+    "tags": ["spell", "counteract"],
+    "text": "Встречная проверка d20 + модификатор против DC эффекта; сравни уровни counteract. Если твой уровень ниже, эффект может не подействовать или подействовать частично.",
+    "source": "Player Core",
+    "url": "https://2e.aonprd.com/Search.aspx?Query=Counteract"
+  },
+  {
+    "id": "spell-attack-dc",
+    "title": "Spell Attack и Spell DC",
+    "aliases": ["spell dc", "spell attack", "сл заклинания", "атака заклинанием"],
+    "category": "Магия",
+    "tags": ["spell", "dc"],
+    "text": "Spell attack = d20 + модификатор (proficiency + ключевая характеристика). Spell DC = 10 + тот же модификатор. Для innate-заклинаний обычно используется Charisma, если не сказано иное.",
+    "source": "Player Core",
+    "url": "https://2e.aonprd.com/Search.aspx?Query=Spell+Attack+Spell+DC"
+  },
+  {
+    "id": "encounter-budget",
+    "title": "Encounter Budget (бюджет энкаунтера)",
+    "aliases": ["бюджет", "xp", "сложность боя", "encounter design"],
+    "category": "Мастеру",
+    "tags": ["encounter", "xp"],
+    "text": "Бюджет на 4 персонажей: trivial 40, low 60, moderate 80, severe 120, extreme 160 XP. На каждого дополнительного персонажа добавляй 10/15/20/30/40 XP соответственно.",
+    "source": "GM Core",
+    "url": "https://2e.aonprd.com/Search.aspx?Query=Encounter+Budget"
+  },
+  {
+    "id": "weak-elite",
+    "title": "Weak и Elite шаблоны",
+    "aliases": ["weak", "elite", "слабый", "элитный", "шаблон"],
+    "category": "Мастеру",
+    "tags": ["monster", "adjustment"],
+    "text": "Elite: считай уровень существа на 1 выше, +2 к AC, атакам, спасброскам, Perception и DC, больше HP. Weak: на 1 уровень ниже и −2 к тем же значениям.",
+    "source": "GM Core",
+    "url": "https://2e.aonprd.com/Search.aspx?Query=Elite+Weak+Adjustments"
+  },
+  {
+    "id": "hazards",
+    "title": "Hazards (опасности)",
+    "aliases": ["ловушка", "опасность", "hazard", "trap"],
+    "category": "Мастеру",
+    "tags": ["hazard", "encounter"],
+    "text": "Опасности (ловушки, природные угрозы) тратят XP как существа своего уровня. Простые опасности обычно ниже уровнем; сложные могут быть на 1–3 уровня выше партии.",
+    "source": "GM Core",
+    "url": "https://2e.aonprd.com/Search.aspx?Query=Hazards"
+  },
+  {
+    "id": "exploration-activities",
+    "title": "Exploration Activities",
+    "aliases": ["исследование", "exploration", "avoid notice", "scout", "search"],
+    "category": "Исследование",
+    "tags": ["exploration"],
+    "text": "В режиме исследования каждый выбирает деятельность: Avoid Notice (Stealth), Defend (щит), Detect Magic, Follow the Expert, Hustle, Investigate, Repeat a Spell, Scout (+1 к инициативе), Search (Perception).",
+    "source": "Player Core",
+    "url": "https://2e.aonprd.com/Search.aspx?Query=Exploration+Activities"
+  },
+  {
+    "id": "treat-wounds",
+    "title": "Treat Wounds (перевязка)",
+    "aliases": ["перевязка", "лечение", "medicine", "treat wounds"],
+    "category": "Исследование",
+    "tags": ["medicine", "healing"],
+    "text": "Medicine, 10 минут, DC 15. Успех: 2d8 HP, крит. успех: 4d8 HP. Повторное лечение того же существа в тот же день обычно осложнено иммунитетом или повышенной DC.",
+    "source": "Player Core",
+    "url": "https://2e.aonprd.com/Search.aspx?Query=Treat+Wounds"
+  },
+  {
+    "id": "earn-income",
+    "title": "Earn Income (заработок)",
+    "aliases": ["заработок", "доход", "downtime", "ремесло"],
+    "category": "Исследование",
+    "tags": ["downtime", "skill"],
+    "text": "Downtime: проверка навыка против DC задачи; доход зависит от proficiency и результата (таблица Earn Income). Обычно одна проверка за день downtime.",
+    "source": "Player Core",
+    "url": "https://2e.aonprd.com/Search.aspx?Query=Earn+Income"
+  },
+  {
+    "id": "falling",
+    "title": "Falling (падение)",
+    "aliases": ["падение", "упал", "falling", "grab an edge"],
+    "category": "Базовые правила",
+    "tags": ["damage", "movement"],
+    "text": "Падение: 1d6 дробящего урона за каждые 10 футов. Реакция Grab an Edge (Reflex) может спасти от падения; при падении в воду или на мягкую поверхность мастер может снизить урон.",
+    "source": "Player Core",
+    "url": "https://2e.aonprd.com/Search.aspx?Query=Falling"
+  }
+]
