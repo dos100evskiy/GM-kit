@@ -49,6 +49,8 @@ const en = {
     selectHintText:
       "The rule text, source, and an Archives of Nethys link will appear here.",
     showAll: "Show all",
+    showMore: "Show more",
+    remaining: "{{count}} remaining",
     contentRu: "Russian summary",
     contentEn: "English summary",
   },

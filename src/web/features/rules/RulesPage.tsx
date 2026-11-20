@@ -1,4 +1,4 @@
-import { useDeferredValue, useMemo, useState } from "react";
+import { useDeferredValue, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { BookOpen, ExternalLink, Search } from "lucide-react";
 
@@ -8,6 +8,9 @@ import { useAllRules } from "../../hooks/useLibrary";
 import { useApp } from "../../store";
 
 type SourceFilter = "all" | "core" | "imported";
+
+const PAGE_SIZE = 80;
+const SEARCH_LIMIT = 10000;
 
 function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -34,10 +37,15 @@ export function RulesPage() {
   const deferredQuery = useDeferredValue(query);
   const [filter, setFilter] = useState<SourceFilter>("all");
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   const index = useMemo(() => new RuleIndex(docs), [docs]);
 
-  const hits = useMemo(() => {
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE);
+  }, [deferredQuery, filter]);
+
+  const matches = useMemo(() => {
     const allowed = new Set(
       docs
         .filter((doc) => {
@@ -51,16 +59,19 @@ export function RulesPage() {
       return docs
         .filter((doc) => allowed.has(doc.id))
         .sort((a, b) => a.title.localeCompare(b.title))
-        .slice(0, 80)
         .map((doc) => ({ doc, snippet: doc.text }));
     }
 
     return index
-      .search(deferredQuery, { limit: 300 })
+      .search(deferredQuery, { limit: SEARCH_LIMIT })
       .filter((hit) => allowed.has(hit.doc.id))
-      .slice(0, 60)
       .map((hit) => ({ doc: hit.doc, snippet: hit.snippet }));
   }, [deferredQuery, docs, filter, index]);
+
+  const total = matches.length;
+  const hits = matches.slice(0, visibleCount);
+  const remaining = total - hits.length;
+  const hasMore = remaining > 0;
 
   const focusedDoc = useMemo(
     () =>
@@ -84,7 +95,7 @@ export function RulesPage() {
           <p className="page-sub">{t("rules.subtitle")}</p>
         </div>
         <span className="badge badge-gold">
-          {t("rules.results", { count: hits.length })}
+          {t("rules.results", { count: total })}
         </span>
       </header>
 
@@ -144,34 +155,56 @@ export function RulesPage() {
                 <div className="text-xs">{t("rules.noResultsHint")}</div>
               </div>
             ) : (
-              hits.map((hit) => (
-                <button
-                  key={hit.doc.id}
-                  type="button"
-                  className={`rule-hit ${
-                    selected?.id === hit.doc.id ? "selected" : ""
-                  }`}
-                  onClick={() => {
-                    setSelectedId(hit.doc.id);
-                    setFocusedRuleId(null);
-                  }}
-                >
-                  <div className="rule-hit-title">{hit.doc.title}</div>
-                  <div className="rule-hit-snippet">
-                    {highlight(hit.snippet, deferredQuery)}
+              <>
+                {hits.map((hit) => (
+                  <button
+                    key={hit.doc.id}
+                    type="button"
+                    className={`rule-hit ${
+                      selected?.id === hit.doc.id ? "selected" : ""
+                    }`}
+                    onClick={() => {
+                      setSelectedId(hit.doc.id);
+                      setFocusedRuleId(null);
+                    }}
+                  >
+                    <div className="rule-hit-title">{hit.doc.title}</div>
+                    <div className="rule-hit-snippet">
+                      {highlight(hit.snippet, deferredQuery)}
+                    </div>
+                    <div className="mt-1 flex items-center gap-2">
+                      {hit.doc.category && (
+                        <span className="badge">{hit.doc.category}</span>
+                      )}
+                      <span className="faint text-[10px]">
+                        {isBundled(hit.doc)
+                          ? t("rules.core")
+                          : t("rules.imported")}
+                      </span>
+                    </div>
+                  </button>
+                ))}
+
+                {hasMore && (
+                  <div
+                    className="border-t p-3"
+                    style={{ borderColor: "var(--border-soft)" }}
+                  >
+                    <button
+                      type="button"
+                      className="btn btn-sm w-full"
+                      onClick={() =>
+                        setVisibleCount((count) => count + PAGE_SIZE)
+                      }
+                    >
+                      {t("rules.showMore")}
+                      <span className="faint text-[11px]">
+                        {t("rules.remaining", { count: remaining })}
+                      </span>
+                    </button>
                   </div>
-                  <div className="mt-1 flex items-center gap-2">
-                    {hit.doc.category && (
-                      <span className="badge">{hit.doc.category}</span>
-                    )}
-                    <span className="faint text-[10px]">
-                      {isBundled(hit.doc)
-                        ? t("rules.core")
-                        : t("rules.imported")}
-                    </span>
-                  </div>
-                </button>
-              ))
+                )}
+              </>
             )}
           </div>
         </section>

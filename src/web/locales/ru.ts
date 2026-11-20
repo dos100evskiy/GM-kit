@@ -49,6 +49,8 @@ const ru = {
     selectHintText:
       "Здесь появится текст правила, источник и ссылка на Archives of Nethys.",
     showAll: "Показать все",
+    showMore: "Показать ещё",
+    remaining: "осталось {{count}}",
     contentRu: "Пересказ на русском",
     contentEn: "English summary",
   },
