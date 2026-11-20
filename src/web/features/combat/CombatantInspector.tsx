@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   ArrowLeft,
@@ -22,6 +22,7 @@ import {
   heal,
   log,
   removeCondition,
+  setInitiative,
   spendActions,
   type Combatant,
   type CombatState,
@@ -47,6 +48,23 @@ export function CombatantInspector({
   const [type, setType] = useState("");
   const [crit, setCrit] = useState(false);
   const [agile, setAgile] = useState(false);
+  const [initiative, setInitiativeValue] = useState<number | "">(
+    combatant.initiative ?? "",
+  );
+
+  useEffect(() => {
+    setInitiativeValue(combatant.initiative ?? "");
+  }, [combatant.id, combatant.initiative]);
+
+  const applyInitiative = () => {
+    onMutate((state) =>
+      setInitiative(
+        state,
+        combatant.id,
+        initiative === "" ? null : Number(initiative),
+      ),
+    );
+  };
 
   const [conditionSlug, setConditionSlug] = useState("frightened");
   const [conditionValue, setConditionValue] = useState(1);
@@ -124,6 +142,35 @@ export function CombatantInspector({
             )}
           </div>
         </div>
+      </div>
+
+      <div className="panel panel-pad">
+        <label className="field">
+          <span className="label">{t("combat.initiative")}</span>
+          <div className="flex gap-2">
+            <input
+              className="input num"
+              type="number"
+              value={initiative}
+              onChange={(event) =>
+                setInitiativeValue(
+                  event.target.value === "" ? "" : Number(event.target.value),
+                )
+              }
+              onKeyDown={(event) => {
+                if (event.key === "Enter") applyInitiative();
+              }}
+              placeholder="—"
+            />
+            <button
+              type="button"
+              className="btn btn-sm"
+              onClick={applyInitiative}
+            >
+              {t("combat.apply")}
+            </button>
+          </div>
+        </label>
       </div>
 
       <div className="panel panel-pad">

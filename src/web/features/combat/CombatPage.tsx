@@ -1,16 +1,20 @@
 import { useLiveQuery } from "dexie-react-hooks";
 import {
   ArrowLeft,
+  Bookmark,
   ChevronRight,
   Dices,
+  FolderOpen,
   Plus,
+  Radio,
   RotateCcw,
   Skull,
+  Square,
   Swords,
   Trash2,
   Undo2,
 } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import {
@@ -19,6 +23,7 @@ import {
   applyDamage,
   conditionName,
   createState,
+  endEncounter,
   endTurn,
   makeCombatant,
   removeCondition,
@@ -28,8 +33,15 @@ import {
   type Combatant,
   type NewCombatant,
 } from "../../../core/combat";
-import { db, type EncounterRow } from "../../db";
+import { snapshotFromPf2e } from "../../../systems/live";
+import {
+  instantiatePf2e,
+  toPf2eTemplate,
+} from "../../../systems/templates";
+import { db, type EncounterRow, type PreparedBattleRow } from "../../db";
+import { usePublishCombat, useServerInfo } from "../../live";
 import { useApp } from "../../store";
+import { PreparedBattlesDialog } from "../prepared/PreparedBattlesDialog";
 import { AddCombatantDialog } from "./AddCombatantDialog";
 import { CombatantInspector } from "./CombatantInspector";
 
@@ -52,10 +64,17 @@ export function CombatPage() {
 
   const activeId = useApp((state) => state.activeEncounterId);
   const setActiveId = useApp((state) => state.setActiveEncounterId);
+  const setTab = useApp((state) => state.setTab);
+  const broadcast = useApp((state) => state.broadcast);
+  const setBroadcast = useApp((state) => state.setBroadcast);
+  const serverInfo = useServerInfo();
 
   const encounters =
     useLiveQuery(
-      () => db.encounters.orderBy("updatedAt").reverse().toArray(),
+      async () =>
+        (
+          await db.encounters.where("systemId").equals("pf2e").sortBy("updatedAt")
+        ).reverse(),
       [],
       [] as EncounterRow[],
     ) ?? [];
@@ -64,6 +83,8 @@ export function CombatPage() {
   const [name, setName] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
+  const [preparedOpen, setPreparedOpen] = useState(false);
+  const [flash, setFlash] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [historyTick, setHistoryTick] = useState(0);
 
@@ -88,12 +109,13 @@ export function CombatPage() {
 
     let cancelled = false;
     void db.encounters.get(activeId).then((row) => {
-      if (cancelled || !row) return;
+      if (cancelled || !row || row.systemId !== "pf2e") return;
+      const pf2eState = row.state as CombatState;
       loadedId.current = row.id;
-      stateRef.current = row.state;
+      stateRef.current = pf2eState;
       history.current = [];
       setHistoryTick((value) => value + 1);
-      setState(row.state);
+      setState(pf2eState);
       setName(row.name);
       setSelectedId(null);
       setError(null);
@@ -161,6 +183,7 @@ export function CombatPage() {
     const next: CombatState = createState();
     await db.encounters.add({
       id,
+      systemId: "pf2e",
       name: t("combat.defaultName", { n: encounters.length + 1 }),
       state: next,
       createdAt: now,
@@ -173,6 +196,51 @@ export function CombatPage() {
     setName(t("combat.defaultName", { n: encounters.length + 1 }));
     setSelectedId(null);
     setActiveId(id);
+  };
+
+  const savePrepared = async () => {
+    if (!state?.combatants.length) return;
+    const entered = window.prompt(
+      t("prepared.savePrompt"),
+      name || t("combat.defaultName", { n: 1 }),
+    );
+    if (!entered?.trim()) return;
+    const now = Date.now();
+    await db.prepared.add({
+      id: crypto.randomUUID(),
+      systemId: "pf2e",
+      name: entered.trim(),
+      state: toPf2eTemplate(state),
+      createdAt: now,
+      updatedAt: now,
+    });
+    setFlash(t("prepared.saved"));
+    window.setTimeout(() => setFlash(null), 2200);
+  };
+
+  const loadPrepared = async (row: PreparedBattleRow) => {
+    const next = instantiatePf2e(row.state as CombatState);
+    const id = crypto.randomUUID();
+    const now = Date.now();
+    await db.encounters.add({
+      id,
+      systemId: "pf2e",
+      name: row.name,
+      state: next,
+      createdAt: now,
+      updatedAt: now,
+    });
+    loadedId.current = id;
+    stateRef.current = next;
+    history.current = [];
+    setHistoryTick((value) => value + 1);
+    setState(next);
+    setName(row.name);
+    setSelectedId(null);
+    setError(null);
+    setPreparedOpen(false);
+    setActiveId(id);
+    setTab("combat");
   };
 
   const removeEncounter = async () => {
@@ -206,6 +274,10 @@ export function CombatPage() {
 
   const begin = () => mutate((draft) => startEncounter(draft));
   const nextTurn = () => mutate((draft) => endTurn(draft));
+  const endFight = () => {
+    if (!window.confirm(t("combat.endConfirm"))) return;
+    mutate((draft) => endEncounter(draft));
+  };
 
   const resetCombat = () => {
     if (!window.confirm(t("combat.resetConfirm"))) return;
@@ -214,6 +286,7 @@ export function CombatPage() {
       draft.log = [];
       draft.round = 0;
       draft.started = false;
+      draft.ended = false;
       draft.activeId = null;
     });
     setSelectedId(null);
@@ -236,6 +309,26 @@ export function CombatPage() {
   const order = state ? turnOrder(state) : [];
   const selected = state?.combatants.find((row) => row.id === selectedId) ?? null;
 
+  const playerSnapshot = useMemo(
+    () => (state ? snapshotFromPf2e(state, name) : null),
+    [name, state],
+  );
+  const ended = Boolean(state?.ended);
+  usePublishCombat(
+    playerSnapshot ?? {
+      version: 1,
+      systemId: "pf2e",
+      encounter: "",
+      round: 0,
+      started: false,
+      activeId: null,
+      order: [],
+    },
+    Boolean(playerSnapshot) && broadcast && !ended,
+    serverInfo?.live ?? false,
+    ended ? "ended" : "manual",
+  );
+
   if (!activeId || !state) {
     return (
       <div className="fade-in">
@@ -244,14 +337,24 @@ export function CombatPage() {
             <h1 className="page-title">{t("combat.title")}</h1>
             <p className="page-sub">{t("combat.subtitle")}</p>
           </div>
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={() => void createCombat()}
-          >
-            <Plus size={15} />
-            {t("combat.newCombat")}
-          </button>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              className="btn"
+              onClick={() => setPreparedOpen(true)}
+            >
+              <FolderOpen size={15} />
+              {t("prepared.open")}
+            </button>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() => void createCombat()}
+            >
+              <Plus size={15} />
+              {t("combat.newCombat")}
+            </button>
+          </div>
         </header>
 
         <section className="panel">
@@ -283,9 +386,17 @@ export function CombatPage() {
                   <div className="flex items-center gap-2">
                     <Swords size={14} className="gold" />
                     <span className="rule-hit-title">{row.name}</span>
-                    <span className="badge badge-gold ml-auto">
-                      {t("combat.round", { round: row.state.round })}
-                    </span>
+                    {(row.state as CombatState).ended ? (
+                      <span className="badge badge-red ml-auto">
+                        {t("combat.ended")}
+                      </span>
+                    ) : (
+                      <span className="badge badge-gold ml-auto">
+                        {t("combat.round", {
+                          round: (row.state as CombatState).round,
+                        })}
+                      </span>
+                    )}
                   </div>
                   <div className="rule-hit-snippet">
                     {row.state.combatants.length} × {t("combat.hpShort", {
@@ -298,6 +409,14 @@ export function CombatPage() {
             </div>
           )}
         </section>
+
+        {preparedOpen && (
+          <PreparedBattlesDialog
+            systemId="pf2e"
+            onClose={() => setPreparedOpen(false)}
+            onLoad={loadPrepared}
+          />
+        )}
       </div>
     );
   }
@@ -358,12 +477,18 @@ export function CombatPage() {
 
               <span
                 className={`badge ${
-                  state.started ? "badge-gold" : "badge"
+                  state.ended
+                    ? "badge-red"
+                    : state.started
+                      ? "badge-gold"
+                      : "badge"
                 }`}
               >
-                {state.started
-                  ? t("combat.round", { round: state.round })
-                  : t("combat.notStarted")}
+                {state.ended
+                  ? t("combat.ended")
+                  : state.started
+                    ? t("combat.round", { round: state.round })
+                    : t("combat.notStarted")}
               </span>
 
               {current ? (
@@ -375,7 +500,20 @@ export function CombatPage() {
               )}
 
               <div className="ml-auto flex flex-wrap items-center gap-2">
-                {!state.started && (
+                {serverInfo?.live && (
+                  <button
+                    type="button"
+                    className={`btn btn-sm ${
+                      broadcast ? "btn-gold" : ""
+                    }`}
+                    onClick={() => setBroadcast(!broadcast)}
+                    title={t("live.broadcastHint")}
+                  >
+                    <Radio size={14} />
+                    {t("live.broadcast")}
+                  </button>
+                )}
+                {!state.started && !state.ended && (
                   <button
                     type="button"
                     className="btn btn-primary"
@@ -386,15 +524,25 @@ export function CombatPage() {
                     {t("combat.start")}
                   </button>
                 )}
-                {state.started && (
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={nextTurn}
-                  >
-                    <ChevronRight size={15} />
-                    {t("combat.endTurn")}
-                  </button>
+                {state.started && !state.ended && (
+                  <>
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={nextTurn}
+                    >
+                      <ChevronRight size={15} />
+                      {t("combat.endTurn")}
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-danger"
+                      onClick={endFight}
+                    >
+                      <Square size={14} />
+                      {t("combat.endCombat")}
+                    </button>
+                  </>
                 )}
                 <button
                   type="button"
@@ -403,6 +551,23 @@ export function CombatPage() {
                 >
                   <Plus size={15} />
                   {t("combat.add")}
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-sm"
+                  onClick={() => setPreparedOpen(true)}
+                >
+                  <FolderOpen size={14} />
+                  {t("prepared.open")}
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-sm"
+                  onClick={() => void savePrepared()}
+                  disabled={!state.combatants.length}
+                >
+                  <Bookmark size={14} />
+                  {t("prepared.save")}
                 </button>
                 <button
                   type="button"
@@ -426,8 +591,9 @@ export function CombatPage() {
             </div>
 
             {error && <p className="mt-3 text-xs red">{error}</p>}
+            {flash && <p className="mt-3 text-xs green">{flash}</p>}
 
-            {!state.started && state.combatants.length > 0 && (
+            {!state.started && !state.ended && state.combatants.length > 0 && (
               <p className="mt-3 text-xs faint">{t("combat.startHint")}</p>
             )}
           </section>
@@ -674,6 +840,13 @@ export function CombatPage() {
         <AddCombatantDialog
           onClose={() => setAdding(false)}
           onAdd={addCombatant}
+        />
+      )}
+      {preparedOpen && (
+        <PreparedBattlesDialog
+          systemId="pf2e"
+          onClose={() => setPreparedOpen(false)}
+          onLoad={loadPrepared}
         />
       )}
     </div>

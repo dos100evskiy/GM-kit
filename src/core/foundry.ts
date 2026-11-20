@@ -217,10 +217,13 @@ function isRuleLike(value: unknown): value is RuleDoc {
 
 function isMonsterLike(value: unknown): value is MonsterRef {
   const record = asRecord(value);
+  if (typeof record.name !== "string") return false;
+  if (typeof record.level === "number" && Number.isFinite(record.level)) {
+    return true;
+  }
   return (
-    typeof record.name === "string" &&
-    typeof record.level === "number" &&
-    Number.isFinite(record.level)
+    (typeof record.cr === "number" && Number.isFinite(record.cr)) ||
+    typeof record.cr === "string"
   );
 }
 

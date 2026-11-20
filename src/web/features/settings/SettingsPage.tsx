@@ -2,6 +2,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 import {
   AlertTriangle,
   CheckCircle2,
+  Copy,
   Database,
   Download,
   FileJson,
@@ -10,8 +11,10 @@ import {
   Info,
   Languages,
   Loader2,
+  Radio,
   Trash2,
   Upload,
+  Wifi,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState, type DragEvent } from "react";
 import { useTranslation } from "react-i18next";
@@ -23,9 +26,25 @@ import {
   type FoundryFile,
 } from "../../../core/foundry";
 import type { RuleDoc } from "../../../core/search";
-import { clearImportedData, db, type EncounterRow, type MetaRow } from "../../db";
-import { bundledMonsters, bundledRules } from "../../data/bundled";
+import {
+  crToXp,
+  formatCr,
+} from "../../../systems/dnd5e/encounter";
+import {
+  clearImportedData,
+  db,
+  type EncounterRow,
+  type MetaRow,
+  type PreparedBattleRow,
+} from "../../db";
+import {
+  bundledMonstersBySystem,
+  bundledRulesBySystem,
+} from "../../data/bundled";
+import { useServerInfo } from "../../live";
 import { useApp } from "../../store";
+import { getSystem, type SystemId } from "../../../systems/types";
+import { QrCode } from "../../components/QrCode";
 
 interface FileWithPath {
   file: File;
@@ -52,6 +71,7 @@ interface BackupPayload {
   rules?: RuleDoc[];
   monsters?: MonsterRef[];
   encounters?: EncounterRow[];
+  prepared?: PreparedBattleRow[];
   meta?: MetaRow[];
 }
 
@@ -105,20 +125,60 @@ function formatBytes(value?: number): string {
   return `${(mb / 1024).toFixed(2)} GB`;
 }
 
+function parseCr(value: unknown): number | undefined {
+  if (typeof value === "number" && Number.isFinite(value)) return value;
+  if (typeof value !== "string") return undefined;
+  const trimmed = value.trim();
+  if (!trimmed) return undefined;
+  if (trimmed.includes("/")) {
+    const [a, b] = trimmed.split("/");
+    const numerator = Number(a);
+    const denominator = Number(b);
+    if (Number.isFinite(numerator) && denominator) {
+      return numerator / denominator;
+    }
+    return undefined;
+  }
+  const parsed = Number(trimmed);
+  return Number.isFinite(parsed) ? parsed : undefined;
+}
+
+function normalizeDndMonsters(monsters: MonsterRef[]): MonsterRef[] {
+  return monsters.map((monster) => {
+    const level =
+      typeof monster.level === "number" && Number.isFinite(monster.level)
+        ? monster.level
+        : (parseCr(monster.cr) ?? 0);
+    return {
+      ...monster,
+      level,
+      cr: monster.cr ?? formatCr(level),
+      xp: monster.xp ?? crToXp(level),
+    };
+  });
+}
+
 function ensureIds(
   rules: RuleDoc[],
   monsters: MonsterRef[],
-): { rules: Array<RuleDoc & { id: string }>; monsters: Array<MonsterRef & { id: string }> } {
+  systemId: SystemId,
+): {
+  rules: Array<RuleDoc & { id: string; systemId: SystemId }>;
+  monsters: Array<MonsterRef & { id: string; systemId: SystemId }>;
+} {
   return {
     rules: rules.map((rule, index) => ({
       ...rule,
       id: rule.id || `json:rule:${slug(rule.title)}:${index}`,
+      systemId: (rule as RuleDoc & { systemId?: SystemId }).systemId ?? systemId,
     })),
     monsters: monsters.map((monster, index) => ({
       ...monster,
       id:
         (monster as MonsterRef & { id?: string }).id ||
         `json:monster:${slug(monster.name)}:${monster.level}:${index}`,
+      systemId:
+        (monster as MonsterRef & { systemId?: SystemId }).systemId ?? systemId,
     })),
   };
 }
@@ -127,21 +187,52 @@ export function SettingsPage() {
   const { t } = useTranslation();
   const lang = useApp((state) => state.lang);
   const setLang = useApp((state) => state.setLang);
+  const system = useApp((state) => state.system);
   const bumpDataVersion = useApp((state) => state.bumpDataVersion);
   const setActiveEncounterId = useApp((state) => state.setActiveEncounterId);
+  const serverInfo = useServerInfo();
+  const [copied, setCopied] = useState<string | null>(null);
+  const [lanRules, setLanRules] = useState(0);
+  const primaryNetwork = serverInfo?.network?.primary ?? null;
+  const alternativeNetworks = serverInfo?.network?.alternatives ?? [];
 
-  const rulesCount = useLiveQuery(() => db.rules.count(), [], 0);
-  const monstersCount = useLiveQuery(() => db.monsters.count(), [], 0);
-  const encountersCount = useLiveQuery(() => db.encounters.count(), [], 0);
-  const importedMonsters = useLiveQuery(() => db.monsters.toArray(), [], []);
+  const rulesCount =
+    useLiveQuery(
+      () => db.rules.where("systemId").equals(system).count(),
+      [system],
+      0,
+    ) ?? 0;
+  const monstersCount =
+    useLiveQuery(
+      () => db.monsters.where("systemId").equals(system).count(),
+      [system],
+      0,
+    ) ?? 0;
+  const encountersCount =
+    useLiveQuery(
+      () => db.encounters.where("systemId").equals(system).count(),
+      [system],
+      0,
+    ) ?? 0;
+  const importedMonsters =
+    useLiveQuery(
+      () => db.monsters.where("systemId").equals(system).toArray(),
+      [system],
+      [],
+    ) ?? [];
+
+  const bundledRules = bundledRulesBySystem[system];
+  const bundledMonsters = bundledMonstersBySystem[system];
 
   const totalMonsters = useMemo(() => {
-    const names = new Set(bundledMonsters.map((monster) => monster.name.toLowerCase()));
-    for (const monster of importedMonsters ?? []) {
+    const names = new Set(
+      bundledMonsters.map((monster) => monster.name.toLowerCase()),
+    );
+    for (const monster of importedMonsters) {
       names.add(monster.name.toLowerCase());
     }
     return names.size;
-  }, [importedMonsters]);
+  }, [bundledMonsters, importedMonsters]);
 
   const [busy, setBusy] = useState<BusyState>({
     phase: null,
@@ -177,12 +268,31 @@ export function SettingsPage() {
     void refreshStorage();
   }, []);
 
+  useEffect(() => {
+    if (!serverInfo?.live) return;
+    let alive = true;
+    const timer = window.setTimeout(() => {
+      void fetch(`/api/library/meta?systemId=${system}`, { cache: "no-store" })
+        .then(async (response) =>
+          response.ok ? ((await response.json()) as { count?: number }) : null,
+        )
+        .then((data) => {
+          if (alive && data) setLanRules(Number(data.count) || 0);
+        })
+        .catch(() => undefined);
+    }, 1200);
+    return () => {
+      alive = false;
+      window.clearTimeout(timer);
+    };
+  }, [message, serverInfo?.live, system]);
+
   const writeLibrary = async (
     rules: RuleDoc[],
     monsters: MonsterRef[],
     source: string,
   ) => {
-    const withIds = ensureIds(rules, monsters);
+    const withIds = ensureIds(rules, monsters, system);
     const ruleMap = new Map(withIds.rules.map((rule) => [rule.id, rule]));
     const monsterMap = new Map(
       withIds.monsters.map((monster) => [monster.id, monster]),
@@ -191,13 +301,22 @@ export function SettingsPage() {
     await db.transaction("rw", db.rules, db.monsters, db.meta, async () => {
       await bulkPut(db.rules, [...ruleMap.values()]);
       await bulkPut(db.monsters, [...monsterMap.values()]);
+      const systemRules = await db.rules
+        .where("systemId")
+        .equals(system)
+        .count();
+      const systemMonsters = await db.monsters
+        .where("systemId")
+        .equals(system)
+        .count();
       await db.meta.put({
-        key: "import",
+        key: `import:${system}`,
         value: {
           source,
+          systemId: system,
           importedAt: new Date().toISOString(),
-          rules: await db.rules.count(),
-          monsters: await db.monsters.count(),
+          rules: systemRules,
+          monsters: systemMonsters,
         },
       });
     });
@@ -275,7 +394,11 @@ export function SettingsPage() {
           const parsed = JSON.parse(await file.text());
           const normalized = normalizeJsonData(parsed);
           rules.push(...normalized.rules);
-          monsters.push(...normalized.monsters);
+          monsters.push(
+            ...(system === "dnd5e"
+              ? normalizeDndMonsters(normalized.monsters)
+              : normalized.monsters),
+          );
         } catch {
           failed += 1;
         }
@@ -314,12 +437,13 @@ export function SettingsPage() {
   const exportBackup = async () => {
     try {
       const payload: BackupPayload = {
-        app: "pf2e-gm-kit",
-        version: 1,
+        app: "gm-kit",
+        version: 2,
         exportedAt: new Date().toISOString(),
         rules: await db.rules.toArray(),
         monsters: await db.monsters.toArray(),
         encounters: await db.encounters.toArray(),
+        prepared: await db.prepared.toArray(),
         meta: await db.meta.toArray(),
       };
 
@@ -329,7 +453,7 @@ export function SettingsPage() {
       const url = URL.createObjectURL(blob);
       const anchor = document.createElement("a");
       anchor.href = url;
-      anchor.download = `pf2e-gm-kit-backup-${new Date()
+      anchor.download = `gm-kit-backup-${new Date()
         .toISOString()
         .slice(0, 10)}.json`;
       anchor.click();
@@ -356,33 +480,53 @@ export function SettingsPage() {
       const source = parsed.data ?? parsed;
       const rawRules = Array.isArray(source.rules) ? source.rules : [];
       const rawMonsters = Array.isArray(source.monsters) ? source.monsters : [];
-      const encounters = Array.isArray(source.encounters)
-        ? source.encounters
-        : [];
+      const encounters = (
+        Array.isArray(source.encounters) ? source.encounters : []
+      ).map((row) => ({
+        ...row,
+        systemId:
+          (row as EncounterRow & { systemId?: SystemId }).systemId ?? "pf2e",
+      }));
+      const prepared = (
+        Array.isArray(source.prepared) ? source.prepared : []
+      ).map((row) => ({
+        ...row,
+        systemId:
+          (row as PreparedBattleRow & { systemId?: SystemId }).systemId ??
+          "pf2e",
+      }));
       const meta = Array.isArray(source.meta) ? source.meta : [];
 
-      if (!rawRules.length && !rawMonsters.length && !encounters.length) {
+      if (
+        !rawRules.length &&
+        !rawMonsters.length &&
+        !encounters.length &&
+        !prepared.length
+      ) {
         throw new Error(t("settings.backupEmpty"));
       }
 
-      const { rules, monsters } = ensureIds(rawRules, rawMonsters);
+      const { rules, monsters } = ensureIds(rawRules, rawMonsters, "pf2e");
 
       await db.transaction(
         "rw",
         db.rules,
         db.monsters,
         db.encounters,
+        db.prepared,
         db.meta,
         async () => {
           await Promise.all([
             db.rules.clear(),
             db.monsters.clear(),
             db.encounters.clear(),
+            db.prepared.clear(),
             db.meta.clear(),
           ]);
           await bulkPut(db.rules, rules);
           await bulkPut(db.monsters, monsters);
           await bulkPut(db.encounters, encounters);
+          await bulkPut(db.prepared, prepared);
           await bulkPut(db.meta, meta);
         },
       );
@@ -403,7 +547,7 @@ export function SettingsPage() {
 
   const clearImported = async () => {
     if (!window.confirm(t("settings.clearConfirm"))) return;
-    await clearImportedData();
+    await clearImportedData(system);
     bumpDataVersion();
     setMessage({ kind: "ok", text: t("settings.clearDone") });
     await refreshStorage();
@@ -504,6 +648,11 @@ export function SettingsPage() {
             ))}
           </div>
 
+          <p className="mb-2 text-[11px] faint">
+            {t("settings.activeSystem", {
+              system: getSystem(system).name,
+            })}
+          </p>
           <p className="mb-4 text-[11px] faint">
             {t("settings.importedSummary", {
               rules: rulesCount ?? 0,
@@ -512,22 +661,24 @@ export function SettingsPage() {
           </p>
 
           <div className="flex flex-wrap gap-2">
+            {system === "pf2e" && (
+              <button
+                type="button"
+                className="btn btn-primary"
+                disabled={working}
+                onClick={() => folderInput.current?.click()}
+              >
+                {busy.phase ? (
+                  <Loader2 size={15} className="animate-spin" />
+                ) : (
+                  <FolderUp size={15} />
+                )}
+                {t("settings.importFolder")}
+              </button>
+            )}
             <button
               type="button"
-              className="btn btn-primary"
-              disabled={working}
-              onClick={() => folderInput.current?.click()}
-            >
-              {busy.phase ? (
-                <Loader2 size={15} className="animate-spin" />
-              ) : (
-                <FolderUp size={15} />
-              )}
-              {t("settings.importFolder")}
-            </button>
-            <button
-              type="button"
-              className="btn"
+              className={`btn ${system === "dnd5e" ? "btn-primary" : ""}`}
               disabled={working}
               onClick={() => jsonInput.current?.click()}
             >
@@ -577,10 +728,11 @@ export function SettingsPage() {
             }}
           />
 
-          <div
-            className={`mt-4 rounded-xl border border-dashed p-5 text-center text-xs transition-colors ${
-              dragging ? "border-[var(--gold)] text-[var(--gold)]" : "faint"
-            }`}
+          {system === "pf2e" && (
+            <div
+              className={`mt-4 rounded-xl border border-dashed p-5 text-center text-xs transition-colors ${
+                dragging ? "border-[var(--gold)] text-[var(--gold)]" : "faint"
+              }`}
             style={{
               borderColor: dragging ? "var(--gold)" : "var(--border)",
               background: dragging
@@ -599,7 +751,8 @@ export function SettingsPage() {
             <div className="mt-1 text-[11px]">
               {t("settings.importFolderHint")}
             </div>
-          </div>
+            </div>
+          )}
 
           {busy.phase && (
             <div className="mt-4">
@@ -671,6 +824,114 @@ export function SettingsPage() {
               </button>
             )}
           </div>
+        </section>
+
+        <section className="panel panel-pad">
+          <div className="panel-title">
+            <Wifi size={14} />
+            {t("settings.lan")}
+          </div>
+
+          {serverInfo?.live ? (
+            <div className="space-y-3">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="badge badge-green">
+                  <Radio size={12} />
+                  {t("settings.lanOn")}
+                </span>
+                <span className="text-xs faint">
+                  {t("settings.lanRules", {
+                    count: lanRules,
+                  })}
+                </span>
+              </div>
+
+              {primaryNetwork ? (
+                <div className="lan-primary">
+                  <div className="lan-primary-main">
+                    <div className="label">{t("settings.lanPrimary")}</div>
+                    <code className="input num !min-h-0 py-2 text-sm">
+                      {primaryNetwork.url}
+                    </code>
+                    <div className="mt-2 flex flex-wrap items-center gap-2">
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-gold"
+                        onClick={async () => {
+                          try {
+                            await navigator.clipboard.writeText(
+                              primaryNetwork.url,
+                            );
+                            setCopied(primaryNetwork.url);
+                            window.setTimeout(() => setCopied(null), 1500);
+                          } catch {
+                            // clipboard may be unavailable
+                          }
+                        }}
+                      >
+                        <Copy size={13} />
+                        {copied === primaryNetwork.url
+                          ? t("common.copied")
+                          : t("common.copy")}
+                      </button>
+                      <span className="text-[11px] faint">
+                        {t("settings.lanScan")}
+                      </span>
+                    </div>
+                  </div>
+                  <QrCode value={primaryNetwork.url} size={160} />
+                </div>
+              ) : (
+                <p className="text-xs faint">{t("settings.lanNoAddress")}</p>
+              )}
+
+              {alternativeNetworks.length > 0 && (
+                <details className="lan-alternatives">
+                  <summary>
+                    {t("settings.lanAlternatives", {
+                      count: alternativeNetworks.length,
+                    })}
+                  </summary>
+                  {alternativeNetworks.map((network, index) => (
+                    <div
+                      key={network.url}
+                      className="lan-alt-row"
+                    >
+                      <code className="input num flex-1 !min-h-0 py-2 text-xs">
+                        {network.url}
+                      </code>
+                      <span className="badge">
+                        {t(`settings.lanKind.${network.kind}`)}
+                      </span>
+                      <button
+                        type="button"
+                        className="btn btn-sm"
+                        onClick={async () => {
+                          try {
+                            await navigator.clipboard.writeText(network.url);
+                            setCopied(network.url);
+                            window.setTimeout(() => setCopied(null), 1500);
+                          } catch {
+                            // clipboard may be unavailable
+                          }
+                        }}
+                      >
+                        <Copy size={13} />
+                        {copied === network.url
+                          ? t("common.copied")
+                          : t("common.copy")}
+                      </button>
+                    </div>
+                  ))}
+                </details>
+              )}
+
+              <p className="text-xs faint">{t("settings.lanHint")}</p>
+              <p className="text-xs faint">{t("settings.lanFirewall")}</p>
+            </div>
+          ) : (
+            <p className="text-xs faint">{t("settings.lanLocalOnly")}</p>
+          )}
         </section>
 
         <section className="panel panel-pad">

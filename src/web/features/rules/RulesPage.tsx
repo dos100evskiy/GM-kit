@@ -33,6 +33,7 @@ export function RulesPage() {
   const docs = useAllRules();
   const focusedRuleId = useApp((state) => state.focusedRuleId);
   const setFocusedRuleId = useApp((state) => state.setFocusedRuleId);
+  const system = useApp((state) => state.system);
   const [query, setQuery] = useState("");
   const deferredQuery = useDeferredValue(query);
   const [filter, setFilter] = useState<SourceFilter>("all");
@@ -111,7 +112,11 @@ export function RulesPage() {
                   setQuery(event.target.value);
                   setFocusedRuleId(null);
                 }}
-                placeholder={t("rules.placeholder")}
+                placeholder={t(
+                  system === "dnd5e"
+                    ? "dnd.searchPlaceholder"
+                    : "rules.placeholder",
+                )}
                 autoFocus
               />
             </div>
@@ -255,7 +260,11 @@ export function RulesPage() {
                   rel="noreferrer"
                 >
                   <ExternalLink size={14} />
-                  {t("rules.openAon")}
+                  {t(
+                    system === "dnd5e"
+                      ? "rules.openSource"
+                      : "rules.openAon",
+                  )}
                 </a>
               )}
             </div>

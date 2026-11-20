@@ -19,10 +19,10 @@ export default defineConfig({
       registerType: "prompt",
       includeAssets: ["icons/favicon.svg", "icons/apple-touch-icon.png"],
       manifest: {
-        name: "PF2e GM Kit",
-        short_name: "PF2e GM",
+        name: "GM Kit",
+        short_name: "GM Kit",
         description:
-          "Справочник правил, генератор энкаунтеров и боевой трекер Pathfinder 2e",
+          "Справочник правил, генератор энкаунтеров и боевой трекер для настольных систем",
         lang: "ru",
         start_url: "./",
         scope: "./",

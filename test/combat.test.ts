@@ -8,6 +8,7 @@ import {
   beginTurn,
   conditionValue,
   createState,
+  endEncounter,
   endTurn,
   findCombatant,
   makeCombatant,
@@ -38,6 +39,25 @@ function setup(): { state: CombatState; id: string } {
   state.combatants.push(fighter, goblin);
   return { state, id: goblin.id };
 }
+
+describe("endEncounter", () => {
+  it("останавливает бой, сохраняя состав и журнал", () => {
+    const { state } = setup();
+    startEncounter(state);
+    const count = state.combatants.length;
+    endEncounter(state);
+    expect(state.ended).toBe(true);
+    expect(state.started).toBe(false);
+    expect(state.activeId).toBeNull();
+    expect(state.combatants).toHaveLength(count);
+    expect(state.log.at(-1)?.text).toBe("Бой окончен");
+  });
+
+  it("не завершает бой, который не начинали", () => {
+    const state = createState();
+    expect(() => endEncounter(state)).toThrow();
+  });
+});
 
 describe("combat engine", () => {
   it("не складывает одинаковые состояния, берёт максимум", () => {
