@@ -111,6 +111,8 @@ export interface CombatState {
   round: number;
   activeId: string | null;
   started: boolean;
+  /** Бой завершён, но состав и журнал сохранены для просмотра. */
+  ended?: boolean;
   combatants: Combatant[];
   log: LogEntry[];
 }
@@ -157,6 +159,7 @@ export function createState(): CombatState {
     round: 0,
     activeId: null,
     started: false,
+    ended: false,
     combatants: [],
     log: [],
   };
@@ -279,6 +282,19 @@ function sortedCombatants(state: CombatState): Combatant[] {
   });
 }
 
+export function setInitiative(
+  state: CombatState,
+  ref: string,
+  value: number | null,
+): void {
+  const combatant = findCombatant(state, ref);
+  combatant.initiative = value;
+  log(
+    state,
+    `${combatant.name}: инициатива ${value === null ? "—" : value}`,
+  );
+}
+
 export function turnOrder(state: CombatState): Combatant[] {
   return sortedCombatants(state).filter((c) => !c.dead);
 }
@@ -314,10 +330,23 @@ export function startEncounter(state: CombatState, rng: Rng = Math.random): void
   if (!order.length) throw new Error("Все бойцы мертвы.");
 
   state.started = true;
+  state.ended = false;
   state.round = 1;
   state.activeId = order[0]!.id;
   log(state, "Бой начался. Раунд 1");
   beginTurn(state, rng);
+}
+
+/** Завершает бой, сохраняя состав, HP и журнал. */
+export function endEncounter(state: CombatState): void {
+  if (state.ended) return;
+  if (!state.started) {
+    throw new Error("Бой ещё не начат.");
+  }
+  state.ended = true;
+  state.started = false;
+  state.activeId = null;
+  log(state, "Бой окончен");
 }
 
 export function beginTurn(state: CombatState, rng: Rng = Math.random): void {
