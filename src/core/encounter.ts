@@ -83,6 +83,10 @@ export interface MonsterRef {
   hp?: number;
   ac?: number;
   initiativeMod?: number;
+  /** D&D: отображаемый CR и стоимость в XP. */
+  cr?: number | string;
+  xp?: number;
+  url?: string;
 }
 
 export interface EncounterRequest {

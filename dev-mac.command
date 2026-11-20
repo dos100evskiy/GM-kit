@@ -23,4 +23,8 @@ if [ ! -d node_modules ]; then
   }
 fi
 
-npm run dev
+echo ""
+echo "Открываю dev-сервер Vite: http://localhost:5173"
+echo "LAN-режим игроков в dev недоступен — используй start-mac.command."
+echo ""
+npm run dev -- --open
