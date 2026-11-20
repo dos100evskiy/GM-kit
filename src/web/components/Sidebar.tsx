@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
+import { SYSTEMS, type SystemId } from "../../systems/types";
 import { useApp, type Tab } from "../store";
 
 const NAV: Array<{ id: Tab; icon: typeof BookOpen; key: string }> = [
@@ -54,6 +55,8 @@ export function Sidebar() {
   const setTab = useApp((state) => state.setTab);
   const lang = useApp((state) => state.lang);
   const setLang = useApp((state) => state.setLang);
+  const system = useApp((state) => state.system);
+  const setSystem = useApp((state) => state.setSystem);
 
   return (
     <aside className="sidebar">
@@ -64,6 +67,21 @@ export function Sidebar() {
           <div className="brand-sub">{t("brand.sub")}</div>
         </div>
       </div>
+
+      <label className="system-picker">
+        <span className="label">{t("settings.system")}</span>
+        <select
+          className="select"
+          value={system}
+          onChange={(event) => setSystem(event.target.value as SystemId)}
+        >
+          {SYSTEMS.map((item) => (
+            <option key={item.id} value={item.id}>
+              {item.name}
+            </option>
+          ))}
+        </select>
+      </label>
 
       {NAV.map(({ id, icon: Icon, key }) => (
         <button

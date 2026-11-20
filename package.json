@@ -1,13 +1,14 @@
 {
-  "name": "pf2e-gm-kit",
-  "version": "0.1.0",
+  "name": "gm-kit",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
-  "description": "Локальные инструменты мастера для Pathfinder 2e: поиск по правилам, генератор энкаунтеров, боевой трекер",
+  "description": "GM Kit — локальные инструменты мастера: правила, энкаунтеры, боевой трекер и LAN-режим для игроков",
   "engines": {
     "node": ">=20"
   },
   "bin": {
+    "gm-kit": "dist/cli/index.js",
     "pf": "dist/cli/index.js"
   },
   "license": "MIT",
@@ -31,6 +32,7 @@
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.5",
     "@types/node": "^22.10.0",
+    "@types/qrcode": "^1.5.6",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^5.2.0",
@@ -48,6 +50,7 @@
     "dexie-react-hooks": "^4.4.0",
     "i18next": "^27.2.2",
     "lucide-react": "^1.76.0",
+    "qrcode": "^1.5.4",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "react-i18next": "^18.0.3",

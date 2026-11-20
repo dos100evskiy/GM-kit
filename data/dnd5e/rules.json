@@ -1,0 +1,182 @@
+[
+  {
+    "id": "dnd5e:advantage",
+    "title": "Advantage and Disadvantage (преимущество и помеха)",
+    "category": "Правила",
+    "text": "Преимущество: брось d20 дважды и возьми лучший результат. Помеха: брось дважды и возьми худший. Если на один бросок действуют и преимущество, и помеха, они взаимно гасятся — бросается один d20. Преимущество и помеха не складываются: несколько источников не дают больше одного дополнительного кубика.",
+    "source": "SRD 5.1",
+    "url": "https://www.dndbeyond.com/search?q=advantage+and+disadvantage",
+    "tags": ["d20", "advantage"]
+  },
+  {
+    "id": "dnd5e:concentration",
+    "title": "Concentration (концентрация)",
+    "category": "Магия",
+    "text": "Некоторые заклинания требуют концентрации. Одновременно можно концентрироваться только на одном таком заклинании; новое снимает предыдущее. При получении урона — спасбросок Constitution: DC 10 или половина полученного урона, что больше. Провал снимает концентрацию. Концентрация также прерывается при incapacitated или смерти.",
+    "source": "SRD 5.1",
+    "url": "https://www.dndbeyond.com/search?q=concentration",
+    "tags": ["spell", "constitution"]
+  },
+  {
+    "id": "dnd5e:death-saves",
+    "title": "Death Saving Throws (спасброски от смерти)",
+    "category": "Бой",
+    "text": "На 0 HP персонаж падает без сознания и начинает делать спасброски от смерти в начале каждого своего хода. d20: 10 и выше — успех, ниже — провал. Три успеха — стабилизация, три провала — смерть. Натуральная 1 даёт два провала, натуральная 20 — 1 HP и сознание. Урон по существу с 0 HP даёт провал, критическое попадание — два.",
+    "source": "SRD 5.1",
+    "url": "https://www.dndbeyond.com/search?q=death+saving+throws",
+    "tags": ["death", "dying"]
+  },
+  {
+    "id": "dnd5e:actions",
+    "title": "Actions in Combat (действия в бою)",
+    "category": "Бой",
+    "text": "В свой ход существо может переместиться на скорость и совершить одно действие: Attack, Cast a Spell, Dash, Disengage, Dodge, Help, Hide, Ready, Search или Use an Object. Дополнительно может быть одно bonus action и одна реакция вне своего хода. Взаимодействие с предметом обычно бесплатно один раз за ход.",
+    "source": "SRD 5.1",
+    "url": "https://www.dndbeyond.com/search?q=actions+in+combat",
+    "tags": ["action"]
+  },
+  {
+    "id": "dnd5e:bonus-action",
+    "title": "Bonus Action (бонусное действие)",
+    "category": "Бой",
+    "text": "Бонусное действие выполняется в свой ход, только если способность, заклинание или правило прямо его разрешает. За ход можно совершить не более одного бонусного действия. Наличие бонусного действия не отменяет обычное действие.",
+    "source": "SRD 5.1",
+    "url": "https://www.dndbeyond.com/search?q=bonus+action",
+    "tags": ["action", "bonus"]
+  },
+  {
+    "id": "dnd5e:reactions",
+    "title": "Reactions (реакции)",
+    "category": "Бой",
+    "text": "Реакция — особое действие, которое совершается в ответ на триггер, описанный правилом. Одна реакция восстанавливается в начале твоего хода. Типичный пример — opportunity attack при выходе из зоны досягаемости.",
+    "source": "SRD 5.1",
+    "url": "https://www.dndbeyond.com/search?q=reactions",
+    "tags": ["action", "reaction"]
+  },
+  {
+    "id": "dnd5e:opportunity-attacks",
+    "title": "Opportunity Attacks (атаки по возможности)",
+    "category": "Бой",
+    "text": "Когда враг покидает твою зону досягаемости, ты можешь реакцией совершить одну рукопашную атаку оружием. Атака происходит прямо перед выходом цели. Disengage позволяет уйти без этой атаки; телепортация и вынужденное перемещение обычно не провоцируют её.",
+    "source": "SRD 5.1",
+    "url": "https://www.dndbeyond.com/search?q=opportunity+attacks",
+    "tags": ["reaction", "attack"]
+  },
+  {
+    "id": "dnd5e:cover",
+    "title": "Cover (укрытие)",
+    "category": "Бой",
+    "text": "Half cover даёт +2 к AC и спасброскам Dexterity. Three-quarters cover даёт +5. Total cover полностью закрывает цель: по ней нельзя атаковать или нацеливать заклинания напрямую. Укрытие работает, только если линия атаки действительно проходит через препятствие.",
+    "source": "SRD 5.1",
+    "url": "https://www.dndbeyond.com/search?q=cover",
+    "tags": ["ac", "cover"]
+  },
+  {
+    "id": "dnd5e:ability-checks",
+    "title": "Ability Checks and DC (проверки характеристик)",
+    "category": "Правила",
+    "text": "Проверка: d20 + модификатор характеристики + бонус владения, если применимо. Результат сравнивается со сложностью (DC): 5 — очень легко, 10 — легко, 15 — средне, 20 — сложно, 25 — очень сложно, 30 — почти невозможно. Натуральная 20 или 1 на проверке навыка не является автоматическим успехом или провалом, если правило не говорит иначе.",
+    "source": "SRD 5.1",
+    "url": "https://www.dndbeyond.com/search?q=ability+checks",
+    "tags": ["check", "dc"]
+  },
+  {
+    "id": "dnd5e:saving-throws",
+    "title": "Saving Throws (спасброски)",
+    "category": "Правила",
+    "text": "Спасбросок — d20 + модификатор соответствующей характеристики, плюс бонус владения, если персонаж владеет этим спасброском. Против эффекта указывается DC. Успех обычно снижает или отменяет эффект, провал — применяет полностью.",
+    "source": "SRD 5.1",
+    "url": "https://www.dndbeyond.com/search?q=saving+throws",
+    "tags": ["save"]
+  },
+  {
+    "id": "dnd5e:attacks",
+    "title": "Attack Rolls and Critical Hits (атаки и криты)",
+    "category": "Бой",
+    "text": "Атака: d20 + модификатор атаки против AC цели. Натуральная 20 — критическое попадание: удваиваются кости урона, но не фиксированные модификаторы. Натуральная 1 всегда промах. Преимущество и помеха влияют на бросок атаки так же, как на другие d20-проверки.",
+    "source": "SRD 5.1",
+    "url": "https://www.dndbeyond.com/search?q=attack+rolls",
+    "tags": ["attack", "crit"]
+  },
+  {
+    "id": "dnd5e:blinded",
+    "title": "Blinded (ослеплён)",
+    "category": "Состояния",
+    "text": "Ослеплённое существо не видит, автоматически проваливает проверки, требующие зрения, и совершает броски атаки с помехой. Атаки по нему совершаются с преимуществом.",
+    "source": "SRD 5.1",
+    "url": "https://www.dndbeyond.com/search?q=blinded",
+    "tags": ["condition"]
+  },
+  {
+    "id": "dnd5e:charmed",
+    "title": "Charmed (очарован)",
+    "category": "Состояния",
+    "text": "Очарованное существо не может атаковать очаровавшего и не может делать его целью вредных способностей. Очаровавший получает преимущество на социальные проверки против существа.",
+    "source": "SRD 5.1",
+    "url": "https://www.dndbeyond.com/search?q=charmed",
+    "tags": ["condition"]
+  },
+  {
+    "id": "dnd5e:frightened",
+    "title": "Frightened (испуган)",
+    "category": "Состояния",
+    "text": "Испуганное существо совершает проверки характеристик и броски атаки с помехой, пока источник страха в зоне видимости. Оно не может добровольно приблизиться к источнику страха.",
+    "source": "SRD 5.1",
+    "url": "https://www.dndbeyond.com/search?q=frightened",
+    "tags": ["condition"]
+  },
+  {
+    "id": "dnd5e:grappled",
+    "title": "Grappled and Restrained (захват и удержание)",
+    "category": "Состояния",
+    "text": "Grappled: скорость 0, состояние заканчивается, если захвативший incapacitated или цель отстранена. Restrained: скорость 0, броски атаки по цели с преимуществом, её атаки и спасброски Dexterity с помехой.",
+    "source": "SRD 5.1",
+    "url": "https://www.dndbeyond.com/search?q=grappled",
+    "tags": ["condition"]
+  },
+  {
+    "id": "dnd5e:prone",
+    "title": "Prone (лежит)",
+    "category": "Состояния",
+    "text": "Лежащее существо может только ползти, если не встанет. Его броски атаки с помехой. Атаки в упор по нему с преимуществом, дальние — с помехой. Вставание стоит половину скорости.",
+    "source": "SRD 5.1",
+    "url": "https://www.dndbeyond.com/search?q=prone",
+    "tags": ["condition"]
+  },
+  {
+    "id": "dnd5e:stunned",
+    "title": "Stunned and Incapacitated (оглушён)",
+    "category": "Состояния",
+    "text": "Incapacitated: нельзя совершать действия и реакции. Stunned дополнительно даёт помеху на спасброски Dexterity и преимущество атакующим по существу. Скорость оглушённого равна 0.",
+    "source": "SRD 5.1",
+    "url": "https://www.dndbeyond.com/search?q=stunned",
+    "tags": ["condition"]
+  },
+  {
+    "id": "dnd5e:unconscious",
+    "title": "Unconscious (без сознания)",
+    "category": "Состояния",
+    "text": "Без сознания существо incapacitated, не может двигаться и говорить, роняет всё из рук и падает prone. Атаки по нему с преимуществом. На 0 HP обычно сопровождается спасбросками от смерти.",
+    "source": "SRD 5.1",
+    "url": "https://www.dndbeyond.com/search?q=unconscious",
+    "tags": ["condition", "dying"]
+  },
+  {
+    "id": "dnd5e:exhaustion",
+    "title": "Exhaustion (истощение)",
+    "category": "Состояния",
+    "text": "Истощение имеет уровни 1–6. Каждый уровень даёт −2 к проверкам характеристик; уровни 3+ также уменьшают скорость вдвое. Уровень 5 даёт скорость 0, уровень 6 — смерть. Обычно длительный отдых снижает уровень на 1.",
+    "source": "SRD 5.1",
+    "url": "https://www.dndbeyond.com/search?q=exhaustion",
+    "tags": ["condition", "valued"]
+  },
+  {
+    "id": "dnd5e:resting",
+    "title": "Short and Long Rest (отдых)",
+    "category": "Правила",
+    "text": "Короткий отдых — минимум 1 час: можно потратить Hit Dice на лечение и восстановить часть способностей. Длинный отдых — 8 часов, из них 6 сна: восстанавливаются HP, половина Hit Dice и способности. Прерывание длинного отдыха может лишить его эффекта.",
+    "source": "SRD 5.1",
+    "url": "https://www.dndbeyond.com/search?q=resting",
+    "tags": ["rest", "healing"]
+  }
+]

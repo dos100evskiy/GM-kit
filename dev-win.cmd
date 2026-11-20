@@ -18,5 +18,13 @@ if not exist "node_modules" (
   )
 )
 
-call npm run dev
-pause
+echo.
+echo Открываю dev-сервер Vite: http://localhost:5173
+echo LAN-режим игроков в dev недоступен — используй start-win.cmd.
+echo.
+call npm run dev -- --open
+if errorlevel 1 (
+  echo.
+  echo Dev-сервер завершился с ошибкой.
+  pause
+)

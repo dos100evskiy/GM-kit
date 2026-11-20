@@ -117,6 +117,7 @@ export function EncounterPage() {
       const now = Date.now();
       await db.encounters.add({
         id,
+        systemId: "pf2e",
         name: `${plan.difficulty.toUpperCase()} · PL ${plan.partyLevel}`,
         state,
         createdAt: now,

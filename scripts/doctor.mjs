@@ -8,6 +8,8 @@ import net from "node:net";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
+import os from "node:os";
+import { pickNetworks } from "./network.mjs";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const PORT = 4173;
@@ -51,16 +53,19 @@ fileCheck(
   "Apple touch icon",
   path.join("public", "icons", "apple-touch-icon.png"),
 );
-fileCheck("Демо-бестиарий", path.join("data", "monsters", "sample.json"));
+fileCheck("Демо-бестиарий PF2e", path.join("data", "monsters", "sample.json"));
+fileCheck("Правила D&D 5e", path.join("data", "dnd5e", "rules.json"));
+fileCheck("Монстры D&D 5e", path.join("data", "dnd5e", "monsters.json"));
 fileCheck("Стартовый сервер", path.join("scripts", "start.mjs"));
 
 await new Promise((resolve) => {
   const probe = net.createServer();
   probe.once("error", (error) => {
+    const busy = error.code === "EADDRINUSE" || error.code === "EACCES";
     check(
       `Порт ${PORT} свободен`,
-      error.code !== "EADDRINUSE",
-      error.code === "EADDRINUSE" ? "уже занят" : error.code,
+      !busy,
+      busy ? "уже занят или недоступен" : error.code,
     );
     resolve();
   });
@@ -95,3 +100,9 @@ if (distAge) {
   console.log(`PWA-сборка от ${distAge.toLocaleString()}`);
 }
 console.log("Всё готово: node scripts/start.mjs");
+const lan = pickNetworks(os.networkInterfaces(), PORT).primary;
+console.log(
+  lan
+    ? `LAN для игроков: ${lan.url}`
+    : "LAN: адрес не найден — проверь подключение к сети.",
+);
